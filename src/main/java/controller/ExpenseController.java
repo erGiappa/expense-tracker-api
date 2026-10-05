@@ -25,4 +25,11 @@ public class ExpenseController {
     public List<Expense> getAllExpenses() {
         return expenseService.getAllExpenses();
     }
+
+    @PutMapping("/{id}")
+    public Expense updateExpense(
+            @PathVariable Long id,
+            @RequestBody Expense expense) {
+        return expenseService.updateExpense(id, expense);
+    }
 }
