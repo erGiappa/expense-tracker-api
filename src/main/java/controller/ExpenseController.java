@@ -2,6 +2,7 @@ package com.ergiappa.expensetrackerapi.controller;
 
 import com.ergiappa.expensetrackerapi.entity.Expense;
 import com.ergiappa.expensetrackerapi.service.ExpenseService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public Expense createExpense(@RequestBody Expense expense) {
+    public Expense createExpense(@Valid @RequestBody Expense expense) {
         return expenseService.createExpense(expense);
     }
 
