@@ -1,13 +1,13 @@
 package com.ergiappa.expensetrackerapi.service;
 
+import com.ergiappa.expensetrackerapi.dto.ExpenseRequest;
+import com.ergiappa.expensetrackerapi.dto.ExpenseResponse;
 import com.ergiappa.expensetrackerapi.entity.Expense;
+import com.ergiappa.expensetrackerapi.exception.ExpenseNotFoundException;
 import com.ergiappa.expensetrackerapi.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
-import com.ergiappa.expensetrackerapi.exception.ExpenseNotFoundException;
 
 @Service
 public class ExpenseService {
@@ -18,44 +18,68 @@ public class ExpenseService {
         this.expenseRepository = expenseRepository;
     }
 
-    public List<Expense> getAllExpenses() {
-        return expenseRepository.findAll();
+    public List<ExpenseResponse> getAllExpenses() {
+        return expenseRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Expense createExpense(Expense expense) {
-        return expenseRepository.save(expense);
+    public ExpenseResponse createExpense(ExpenseRequest request) {
+
+        Expense expense = new Expense();
+
+        expense.setDescription(request.getDescription());
+        expense.setAmount(request.getAmount());
+        expense.setDate(request.getDate());
+        expense.setCategory(request.getCategory());
+
+        Expense savedExpense = expenseRepository.save(expense);
+
+        return toResponse(savedExpense);
     }
 
-    public Expense updateExpense(Long id, Expense expense) {
+    public ExpenseResponse updateExpense(
+            Long id,
+            ExpenseRequest request) {
 
-        Optional<Expense> existingExpense = expenseRepository.findById(id);
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() ->
+                        new ExpenseNotFoundException(
+                                "Expense not found with id: " + id
+                        )
+                );
 
-        if (existingExpense.isEmpty()) {
-            throw new ExpenseNotFoundException(
-                    "Expense not found with id: " + id
-            );
-        }
+        expense.setDescription(request.getDescription());
+        expense.setAmount(request.getAmount());
+        expense.setDate(request.getDate());
+        expense.setCategory(request.getCategory());
 
-        Expense expenseToUpdate = existingExpense.get();
+        Expense updatedExpense = expenseRepository.save(expense);
 
-        expenseToUpdate.setDescription(expense.getDescription());
-        expenseToUpdate.setAmount(expense.getAmount());
-        expenseToUpdate.setDate(expense.getDate());
-        expenseToUpdate.setCategory(expense.getCategory());
-
-        return expenseRepository.save(expenseToUpdate);
+        return toResponse(updatedExpense);
     }
 
     public void deleteExpense(Long id) {
 
-        Optional<Expense> existingExpense = expenseRepository.findById(id);
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() ->
+                        new ExpenseNotFoundException(
+                                "Expense not found with id: " + id
+                        )
+                );
 
-        if (existingExpense.isEmpty()) {
-            throw new ExpenseNotFoundException(
-                    "Expense not found with id: " + id
-            );
-        }
+        expenseRepository.delete(expense);
+    }
 
-        expenseRepository.deleteById(id);
+    private ExpenseResponse toResponse(Expense expense) {
+
+        return new ExpenseResponse(
+                expense.getId(),
+                expense.getDescription(),
+                expense.getAmount(),
+                expense.getDate(),
+                expense.getCategory()
+        );
     }
 }

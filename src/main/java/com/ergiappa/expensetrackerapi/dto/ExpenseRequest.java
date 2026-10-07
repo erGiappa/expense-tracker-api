@@ -1,33 +1,28 @@
-package com.ergiappa.expensetrackerapi.entity;
+package com.ergiappa.expensetrackerapi.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Entity
-public class Expense {
+public class ExpenseRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @NotBlank
     private String description;
 
+    @NotNull
+    @Positive
     private BigDecimal amount;
 
+    @NotNull
     private LocalDate date;
 
+    @NotBlank
     private String category;
 
-    public Expense() {
-    }
-
-    public Long getId() {
-        return id;
+    public ExpenseRequest() {
     }
 
     public String getDescription() {

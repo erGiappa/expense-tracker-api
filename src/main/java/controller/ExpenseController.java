@@ -1,6 +1,7 @@
 package com.ergiappa.expensetrackerapi.controller;
 
-import com.ergiappa.expensetrackerapi.entity.Expense;
+import com.ergiappa.expensetrackerapi.dto.ExpenseRequest;
+import com.ergiappa.expensetrackerapi.dto.ExpenseResponse;
 import com.ergiappa.expensetrackerapi.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -18,24 +19,29 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public Expense createExpense(@Valid @RequestBody Expense expense) {
-        return expenseService.createExpense(expense);
+    public ExpenseResponse createExpense(
+            @Valid @RequestBody ExpenseRequest request) {
+
+        return expenseService.createExpense(request);
     }
 
     @GetMapping
-    public List<Expense> getAllExpenses() {
+    public List<ExpenseResponse> getAllExpenses() {
+
         return expenseService.getAllExpenses();
     }
 
     @PutMapping("/{id}")
-    public Expense updateExpense(
+    public ExpenseResponse updateExpense(
             @PathVariable Long id,
-            @Valid @RequestBody Expense expense) {
-        return expenseService.updateExpense(id, expense);
+            @Valid @RequestBody ExpenseRequest request) {
+
+        return expenseService.updateExpense(id, request);
     }
 
     @DeleteMapping("/{id}")
     public void deleteExpense(@PathVariable Long id) {
+
         expenseService.deleteExpense(id);
     }
 }
