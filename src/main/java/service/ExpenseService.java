@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ergiappa.expensetrackerapi.exception.ExpenseNotFoundException;
+
 @Service
 public class ExpenseService {
 
@@ -29,7 +31,9 @@ public class ExpenseService {
         Optional<Expense> existingExpense = expenseRepository.findById(id);
 
         if (existingExpense.isEmpty()) {
-            throw new RuntimeException("Expense not found");
+            throw new ExpenseNotFoundException(
+                    "Expense not found with id: " + id
+            );
         }
 
         Expense expenseToUpdate = existingExpense.get();
@@ -47,7 +51,9 @@ public class ExpenseService {
         Optional<Expense> existingExpense = expenseRepository.findById(id);
 
         if (existingExpense.isEmpty()) {
-            throw new RuntimeException("Expense not found");
+            throw new ExpenseNotFoundException(
+                    "Expense not found with id: " + id
+            );
         }
 
         expenseRepository.deleteById(id);

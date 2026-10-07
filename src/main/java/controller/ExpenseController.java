@@ -30,7 +30,7 @@ public class ExpenseController {
     @PutMapping("/{id}")
     public Expense updateExpense(
             @PathVariable Long id,
-            @RequestBody Expense expense) {
+            @Valid @RequestBody Expense expense) {
         return expenseService.updateExpense(id, expense);
     }
 
